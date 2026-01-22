@@ -5,14 +5,15 @@ import (
 	"errors"
 	"io"
 	"net/http"
-	"strings"
 )
-
-var ErrRobotsDenied = errors.New("robots.txt denied")
 
 func (c *Client) ParseContentFromLink(ctx context.Context, link string) (*Document, error) {
 	if link == "" {
 		return nil, errors.New("link cannot be empty")
+	}
+
+	if c.respectRobots && !c.allowedByRobots(ctx, link) {
+		return nil, ErrRobotsDenied
 	}
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, link, nil)
@@ -23,6 +24,10 @@ func (c *Client) ParseContentFromLink(ctx context.Context, link string) (*Docume
 	resp, err := c.sendRequest(req)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, ErrUnexpectedStatusCode
 	}
 
 	defer resp.Body.Close()
@@ -36,17 +41,11 @@ func (c *Client) ParseContentFromLink(ctx context.Context, link string) (*Docume
 		defer reader.Close()
 	}
 
-	if c.respectRobots && !c.allowedByRobots(ctx, link) {
-		return nil, ErrRobotsDenied
-	}
-
 	limited := io.LimitReader(reader, c.maxBodyBytes)
 	doc, err := c.extractFromURL(link, limited)
 	if err != nil {
 		return nil, err
 	}
-
-	doc.Content = strings.Join(strings.Fields(strings.TrimSpace(doc.Content)), " ")
 
 	return doc, nil
 }

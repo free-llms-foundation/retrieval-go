@@ -1,17 +1,10 @@
 package retrieval
 
 import (
-	"net/http"
 	"time"
 )
 
 type Option func(*Config)
-
-func WithUserAgent(agent string) Option {
-	return func(cfg *Config) {
-		cfg.UserAgent = agent
-	}
-}
 
 func WithHeaders(headers [][2]string) Option {
 	return func(cfg *Config) {
@@ -19,7 +12,7 @@ func WithHeaders(headers [][2]string) Option {
 	}
 }
 
-func WithClient(httpClient *http.Client) Option {
+func WithClient(httpClient HTTPClient) Option {
 	return func(cfg *Config) {
 		cfg.HTTPClient = httpClient
 	}
@@ -58,5 +51,11 @@ func WithMaxBodyBytes(maxBytes int64) Option {
 func WithRespectRobots(respect bool) Option {
 	return func(cfg *Config) {
 		cfg.RespectRobots = respect
+	}
+}
+
+func WithProxy(proxy string) Option {
+	return func(cfg *Config) {
+		cfg.Proxy = proxy
 	}
 }

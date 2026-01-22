@@ -14,9 +14,12 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
-	ret := retrieval.New()
+	ret, err := retrieval.New()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	url := "https://go.dev/"
+	url := "https://go.dev"
 	doc, err := ret.ParseContentFromLink(ctx, url)
 	if err != nil {
 		if errors.Is(err, retrieval.ErrRobotsDenied) {
@@ -27,8 +30,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Print("Title:\n\n", doc.Title)
-	fmt.Println("Content:", doc.Content[:min(1000, len(doc.Content))])
+	fmt.Printf("Title:%s\n\n", doc.Title)
+	fmt.Println("Content:", doc.Content[:min(2000, len(doc.Content))])
 	fmt.Println("Byline:", doc.Byline)
 	fmt.Println("SiteName:", doc.SiteName)
 	fmt.Println("Image:", doc.Image)

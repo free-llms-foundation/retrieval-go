@@ -20,7 +20,9 @@ func (c *Client) allowedByRobots(ctx context.Context, target string) bool {
 		return false
 	}
 
-	req.Header.Set("User-Agent", c.userAgent)
+	for _, header := range c.headers {
+		req.Header.Set(header[0], header[1])
+	}
 
 	resp, err := c.client.Do(req)
 	if err != nil {
@@ -42,5 +44,5 @@ func (c *Client) allowedByRobots(ctx context.Context, target string) bool {
 		path = "/"
 	}
 
-	return robots.TestAgent(path, c.userAgent)
+	return robots.TestAgent(path, "*")
 }

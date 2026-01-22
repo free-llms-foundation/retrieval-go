@@ -72,7 +72,10 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
-	c := retrieval.New()
+	c, err := retrieval.New()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	pages, err := c.SearchWithQuery(ctx, "golang ")
 	if err != nil {
@@ -111,9 +114,10 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	c := retrieval.New(
-		retrieval.WithTimeout(20*time.Second),
-	)
+	c, err := retrieval.New()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	doc, err := c.ParseContentFromLink(ctx, "https://support.apple.com/")
 	if err != nil {
@@ -196,7 +200,7 @@ If you need a custom transport (proxy, mTLS, custom DNS, etc.), pass your own `h
 ```go
 hc := &http.Client{ /* custom Transport, etc. */ }
 
-c := retrieval.New(
+c, err := retrieval.New(
 	retrieval.WithClient(hc),
 	// Optional: override timeout as well
 	retrieval.WithTimeout(10*time.Second),
@@ -218,7 +222,7 @@ type Parser interface {
 You can supply your own parser if DuckDuckGo changes its markup or you want to target another HTML endpoint:
 
 ```go
-c := retrieval.New(
+c, err := retrieval.New(
 	retrieval.WithParser(myParser{}),
 )
 ```

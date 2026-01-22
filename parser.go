@@ -47,6 +47,10 @@ func (p *DefaultDDGParser) Parse(reader io.ReadCloser) ([]Page, error) {
 			return
 		}
 
+		if strings.Contains(finalLink, "duckduckgo.com/y.js") || strings.Contains(finalLink, "ad_provider") {
+			return
+		}
+
 		if _, ok := prefixes[finalLink]; ok {
 			return
 		}
@@ -62,10 +66,16 @@ func (p *DefaultDDGParser) Parse(reader io.ReadCloser) ([]Page, error) {
 			}
 		}
 
+		u, err = url.Parse(finalLink)
+		if err != nil {
+			return
+		}
+
 		pages = append(pages, Page{
 			Link:    finalLink,
 			Title:   strings.Join(strings.Fields(s.Text()), " "),
 			Snippet: strings.Join(strings.Fields(snippet), " "),
+			Favicon: fmt.Sprintf(defaultFavicon, u.Host),
 		})
 	})
 

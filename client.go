@@ -2,12 +2,17 @@ package retrieval
 
 import (
 	"net/http"
-	"net/http/cookiejar"
+
+	tls_client "github.com/bogdanfinn/tls-client"
+	"github.com/bogdanfinn/tls-client/profiles"
 )
 
+type HTTPClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
 type Client struct {
-	client          *http.Client
-	userAgent       string
+	client          HTTPClient
 	headers         [][2]string
 	parser          Parser
 	baseURL         string
@@ -16,28 +21,39 @@ type Client struct {
 	respectRobots   bool
 }
 
-func New(opts ...Option) *Client {
+func New(opts ...Option) (*Client, error) {
 	cfg := DefaultConfig()
 	for _, opt := range opts {
-		opt(&cfg)
+		opt(cfg)
 	}
 
 	return NewWithConfig(cfg)
 }
 
-func NewWithConfig(cfg Config) *Client {
-	httpClient := cfg.HTTPClient
+func NewWithConfig(cfg *Config) (*Client, error) {
+	var httpClient = cfg.HTTPClient
 	if httpClient == nil {
-		httpClient = &http.Client{}
-		if cfg.Timeout != 0 {
-			httpClient.Timeout = cfg.Timeout
-		} else {
-			httpClient.Timeout = defaultTimeout
+		options := []tls_client.HttpClientOption{
+			tls_client.WithClientProfile(profiles.Firefox_120),
+			tls_client.WithRandomTLSExtensionOrder(),
 		}
-		httpClient.Jar, _ = cookiejar.New(nil)
 
-	} else if cfg.Timeout != 0 {
-		httpClient.Timeout = cfg.Timeout
+		if cfg.Timeout > 0 {
+			options = append(options, tls_client.WithTimeoutSeconds(int(cfg.Timeout)))
+		} else {
+			options = append(options, tls_client.WithTimeoutSeconds(defaultTimeout))
+		}
+
+		if cfg.Proxy != "" {
+			options = append(options, tls_client.WithProxyUrl(cfg.Proxy))
+		}
+
+		httpTLSClient, err := tls_client.NewHttpClient(tls_client.NewNoopLogger(), options...)
+		if err != nil {
+			return nil, err
+		}
+
+		httpClient = NewTLSAdapter(httpTLSClient)
 	}
 
 	baseURL := cfg.BaseURL
@@ -48,11 +64,6 @@ func NewWithConfig(cfg Config) *Client {
 	headers := cfg.Headers
 	if headers == nil {
 		headers = defaultHeaders
-	}
-
-	userAgent := cfg.UserAgent
-	if userAgent == "" {
-		userAgent = defaultUserAgent
 	}
 
 	headersCopy := append([][2]string(nil), headers...)
@@ -75,11 +86,10 @@ func NewWithConfig(cfg Config) *Client {
 	return &Client{
 		client:          httpClient,
 		headers:         headersCopy,
-		userAgent:       userAgent,
 		parser:          parser,
 		baseURL:         baseURL,
 		maxErrBodyBytes: maxErrBytes,
 		maxBodyBytes:    maxBodyBytes,
 		respectRobots:   cfg.RespectRobots,
-	}
+	}, nil
 }

@@ -13,10 +13,6 @@ func (c *Client) sendRequest(req *http.Request) (*http.Response, error) {
 		}
 	}
 
-	if req.Header.Get("User-Agent") == "" {
-		req.Header.Set("User-Agent", c.userAgent)
-	}
-
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
