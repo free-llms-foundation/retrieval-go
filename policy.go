@@ -8,16 +8,16 @@ import (
 	"github.com/temoto/robotstxt"
 )
 
-func (c *Client) allowedByRobots(ctx context.Context, target string) bool {
+func (c *Client) allowedByRobots(ctx context.Context, target string) (bool, error) {
 	u, err := url.Parse(target)
 	if err != nil || u.Host == "" || u.Scheme == "" {
-		return false
+		return false, nil
 	}
 
 	robotsTxt := u.Scheme + "://" + u.Host + "/robots.txt"
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, robotsTxt, nil)
 	if err != nil {
-		return false
+		return false, err
 	}
 
 	for _, header := range c.headers {
@@ -26,17 +26,17 @@ func (c *Client) allowedByRobots(ctx context.Context, target string) bool {
 
 	resp, err := c.client.Do(req)
 	if err != nil {
-		return false
+		return false, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return false
+		return false, nil
 	}
 
 	robots, err := robotstxt.FromResponse(resp)
 	if err != nil {
-		return false
+		return false, err
 	}
 
 	path := u.EscapedPath()
@@ -44,5 +44,5 @@ func (c *Client) allowedByRobots(ctx context.Context, target string) bool {
 		path = "/"
 	}
 
-	return robots.TestAgent(path, "*")
+	return robots.TestAgent(path, "*"), nil
 }

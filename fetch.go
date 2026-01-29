@@ -12,8 +12,14 @@ func (c *Client) ParseContentFromLink(ctx context.Context, link string) (*Docume
 		return nil, errors.New("link cannot be empty")
 	}
 
-	if c.respectRobots && !c.allowedByRobots(ctx, link) {
-		return nil, ErrRobotsDenied
+	if c.respectRobots {
+		allowed, err := c.allowedByRobots(ctx, link)
+		if err != nil {
+			return nil, err
+		}
+		if !allowed {
+			return nil, ErrRobotsDenied
+		}
 	}
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, link, nil)
