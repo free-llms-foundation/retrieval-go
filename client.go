@@ -3,6 +3,10 @@ package retrieval
 import (
 	"net/http"
 
+	"github.com/JohannesKaufmann/html-to-markdown/v2/converter"
+	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/base"
+	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/commonmark"
+	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/table"
 	tls_client "github.com/bogdanfinn/tls-client"
 	"github.com/bogdanfinn/tls-client/profiles"
 )
@@ -19,6 +23,7 @@ type Client struct {
 	maxErrBodyBytes int64
 	maxBodyBytes    int64
 	respectRobots   bool
+	converter       *converter.Converter
 }
 
 func New(opts ...Option) (*Client, error) {
@@ -83,6 +88,18 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 		maxBodyBytes = defaultMaxBodyBytes
 	}
 
+	converter := converter.NewConverter(
+		converter.WithPlugins(
+			base.NewBasePlugin(),
+			commonmark.NewCommonmarkPlugin(),
+			table.NewTablePlugin(
+				table.WithSpanCellBehavior(table.SpanBehaviorMirror),
+				table.WithNewlineBehavior(table.NewlineBehaviorSkip),
+				table.WithCellPaddingBehavior(table.CellPaddingBehaviorNone),
+			),
+		),
+	)
+
 	return &Client{
 		client:          httpClient,
 		headers:         headersCopy,
@@ -91,5 +108,6 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 		maxErrBodyBytes: maxErrBytes,
 		maxBodyBytes:    maxBodyBytes,
 		respectRobots:   cfg.RespectRobots,
+		converter:       converter,
 	}, nil
 }

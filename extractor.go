@@ -4,7 +4,6 @@ import (
 	"io"
 	"net/url"
 
-	htmltomarkdown "github.com/JohannesKaufmann/html-to-markdown/v2"
 	"github.com/go-shiori/go-readability"
 )
 
@@ -19,12 +18,12 @@ func (c *Client) extractFromURL(u string, body io.Reader) (*Document, error) {
 		return nil, err
 	}
 
-	markdown, err := htmltomarkdown.ConvertString(page.Content)
+	markdown, err := c.converter.ConvertString(page.Content)
 	if err != nil {
 		return nil, err
 	}
 
-	doc := &Document{
+	document := &Document{
 		Title:    page.Title,
 		Content:  markdown,
 		Byline:   page.Byline,
@@ -36,5 +35,5 @@ func (c *Client) extractFromURL(u string, body io.Reader) (*Document, error) {
 		Language: page.Language,
 	}
 
-	return doc, nil
+	return document, nil
 }
