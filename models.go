@@ -20,8 +20,9 @@ type Document struct {
 }
 
 type Page struct {
-	Title   string
 	Link    string
+	Title   string
+	Source  string
 	Snippet string
 	Favicon string
 }
