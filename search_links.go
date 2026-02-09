@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) SearchWithQuery(ctx context.Context, query string) ([]Page, error) {
+func (c *Client) SearchWithQuery(ctx context.Context, query string, dateFilter string) ([]Page, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", c.baseURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
@@ -15,6 +15,9 @@ func (c *Client) SearchWithQuery(ctx context.Context, query string) ([]Page, err
 
 	values := req.URL.Query()
 	values.Set("q", query)
+	if dateFilter != "" {
+		values.Set("df", dateFilter)
+	}
 	req.URL.RawQuery = values.Encode()
 
 	resp, err := c.sendRequest(req)

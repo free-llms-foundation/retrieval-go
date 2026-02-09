@@ -48,12 +48,6 @@ func WithMaxBodyBytes(maxBytes int64) Option {
 	}
 }
 
-func WithRespectRobots(respect bool) Option {
-	return func(cfg *Config) {
-		cfg.RespectRobots = respect
-	}
-}
-
 func WithProxy(proxy string) Option {
 	return func(cfg *Config) {
 		cfg.Proxy = proxy

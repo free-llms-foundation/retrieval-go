@@ -13,7 +13,6 @@ const (
 
 	defaultMaxErrBodyBytes = 1024 * 64   // 64KB limit for error bodies
 	defaultMaxBodyBytes    = 1024 * 1024 // 1MB default for regular bodies
-	defaultRespectRobots   = true
 )
 
 var (
@@ -29,7 +28,6 @@ type Config struct {
 	MaxErrBodyBytes int64
 	MaxBodyBytes    int64
 	Proxy           string
-	RespectRobots   bool
 }
 
 type Parser interface {
@@ -46,6 +44,5 @@ func DefaultConfig() *Config {
 		MaxErrBodyBytes: defaultMaxErrBodyBytes,
 		MaxBodyBytes:    defaultMaxBodyBytes,
 		Proxy:           "",
-		RespectRobots:   defaultRespectRobots,
 	}
 }

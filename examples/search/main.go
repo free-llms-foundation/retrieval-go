@@ -18,7 +18,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	pages, err := ret.SearchWithQuery(ctx, "Golang")
+	pages, err := ret.SearchWithQuery(ctx, "golang generics site:golang.org", "")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -15,6 +15,7 @@ type Document struct {
 	Excerpt     string
 	SiteName    string
 	Image       string
+	Images      []string
 	Favicon     string
 	Language    string
 }

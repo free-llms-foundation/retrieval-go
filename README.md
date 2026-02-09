@@ -32,7 +32,10 @@ Most LLM applications need three things from “internet access”:
 ## Features
 
 - **DuckDuckGo Lite HTML search** (works without browser automation)
-- **Clean text extraction** (title + plain text + canonical URL)
+- **Clean text extraction**:
+  - Returns **Markdown** (including tables!)
+  - Filters clutter (ads, nav bars)
+  - **Basic image filtering** (removes common icons, logos, flags, and tiny elements)
 - **Automatic decompression** (`gzip`, `br`, `zstd`, `deflate`)
 - **Production defaults**
   - request headers close to a real browser
@@ -77,7 +80,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	pages, err := c.SearchWithQuery(ctx, "golang ")
+	// Second argument is the search query
+	// Third argument is the date filter (e.g., "d" for day, "w" for week, "m" for month, "y" for year, or "" for all time)
+	pages, err := c.SearchWithQuery(ctx, "golang generics site:golang.org", "")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -90,43 +95,34 @@ func main() {
 		fmt.Println("Link:", p.Link)
 		fmt.Println("Title:", p.Title)
 		fmt.Println("Snippet:", p.Snippet)
+		fmt.Println("Favicon:", p.Favicon)
 		fmt.Print("-------------------------------------------------\n\n")
 	}
 }
 
 ```
 
-### 2) Fetch + extract readable text
+### 2) Fetch + extract readable content
 
 ```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"log"
-	"time"
-
-	"github.com/free-llms-foundation/retrieval-go"
-)
-
 func main() {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
+	c, _ := retrieval.New()
+	ctx := context.Background()
 
-	c, err := retrieval.New()
+	// Third argument is robotsTxtAllowed (bool)
+	doc, err := c.ParseContentFromLink(ctx, "https://go.dev/blog/generics-next-step", true)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	doc, err := c.ParseContentFromLink(ctx, "https://support.apple.com/")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(doc.Title)
+	fmt.Printf("Title: %s\n", doc.Title)
+	fmt.Printf("Site: %s (%s)\n", doc.SiteName, doc.Language)
 	fmt.Println("---")
-	fmt.Println(doc.Content)
+	fmt.Println(doc.Content) // Clean Markdown
+	
+	if len(doc.Images) > 0 {
+		fmt.Printf("\nExtracted %d images (filtered)\n", len(doc.Images))
+	}
 }
 ```
 
@@ -148,9 +144,11 @@ See the `examples/` folder:
 
 ```go
 type Page struct {
-	Title   string
 	Link    string
-	Snippet string
+	Title   string
+	Source  string  // Hostname or source name
+	Snippet string  // Brief summary from search results
+	Favicon string  // URL to the site's favicon
 }
 ```
 
@@ -158,9 +156,17 @@ type Page struct {
 
 ```go
 type Document struct {
-	Title   string
-	Content string
-	URL     string
+	Title       string
+	Byline      string
+	Content     string   // Main content in Markdown
+	TextContent string   // Raw plain text
+	Excerpt     string   // Short summary/teaser
+	SiteName    string 
+	Image       string   // Lead image URL
+	Images      []string // List of article images (smart-filtered)
+	Favicon     string   // Source favicon URL
+	Language    string   // Detected language code
+	Length      int      // Content length in characters
 }
 ```
 
@@ -175,9 +181,9 @@ You can configure the client via `Option`s or via an explicit `Config`.
 ```go
 c := retrieval.New(
 	retrieval.WithTimeout(15*time.Second),
+	retrieval.WithProxy("http://user:pass@host:port"), // Optional proxy
 	retrieval.WithMaxErrBodyBytes(64*1024),
 	retrieval.WithMaxBodyBytes(1024*1024),
-	retrieval.WithRespectRobots(true),
 )
 ```
 
@@ -188,14 +194,24 @@ cfg := retrieval.DefaultConfig()
 cfg.Timeout = 15 * time.Second
 cfg.MaxErrBodyBytes = 64 * 1024
 cfg.MaxBodyBytes = 1024 * 1024
-cfg.RespectRobots = true
+cfg.Proxy = "http://localhost:8080"
 
 c := retrieval.NewWithConfig(cfg)
 ```
 
+### Proxy Support
+
+You can easily route requests through a proxy (http, https, socks5) using `WithProxy`:
+
+```go
+c, err := retrieval.New(
+    retrieval.WithProxy("http://user:pass@127.0.0.1:8080"),
+)
+```
+
 ### Custom HTTP client
 
-If you need a custom transport (proxy, mTLS, custom DNS, etc.), pass your own `http.Client`:
+If you need a custom transport (mTLS, custom DNS, etc.) that goes beyond simple proxying, pass your own `http.Client`:
 
 ```go
 hc := &http.Client{ /* custom Transport, etc. */ }
@@ -242,7 +258,7 @@ When a target page is disallowed by `robots.txt` (and robots enforcement is enab
 You can handle it explicitly:
 
 ```go
-doc, err := c.ParseContentFromLink(ctx, url)
+doc, err := c.ParseContentFromLink(ctx, url, true)
 if err != nil {
 	if errors.Is(err, retrieval.ErrRobotsDenied) {
 		// skip or handle in a policy-compliant way
@@ -266,10 +282,10 @@ This is extremely helpful for debugging rate limits (429), blocks (403), and ups
 ## Notes for production & LLM usage
 
 - **Rate limits / blocks**: DuckDuckGo may rate-limit or block aggressive traffic. Add caching, backoff, and reasonable concurrency.
-- **Robots / Terms (IMPORTANT)**: `retrieval-go` enforces `robots.txt` when fetching target pages via `ParseContentFromLink` (**enabled by default**). If a page is disallowed, you get `retrieval.ErrRobotsDenied` so you can decide how to handle it.
-  - Note: in the current implementation, the target page request may already be issued before the `robots.txt` check is performed.
-  - You can disable enforcement via `WithRespectRobots(false)`, but it is **strongly recommended not to do so**, because fetching/parsing disallowed content from third‑party sites can create **policy/terms violations and potential legal risk** depending on jurisdiction and use case.
-  - Current behavior is conservative: if `robots.txt` cannot be fetched/parsed or returns non-200, access is treated as denied.
+- **Robots / Terms (IMPORTANT)**: Enforcement is now handled per-request via the third parameter of `ParseContentFromLink`. 
+  - If `true`, the library will fetch and parse `robots.txt` before the main request.
+  - If access is denied, it returns `retrieval.ErrRobotsDenied`.
+  - It's **strongly recommended** to keep this enabled for third-party sites to comply with their crawling policies.
 - **HTML extraction is heuristic**: readability works very well for articles, but not for all pages.
 - **Security**: treat fetched content as untrusted input (sanitize before rendering; consider domain allow-lists).
 

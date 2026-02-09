@@ -19,14 +19,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	pages, err := ret.SearchWithQuery(ctx, "dollar exchange rate")
+	pages, err := ret.SearchWithQuery(ctx, "dollar exchange rate", "d")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for _, p := range pages {
 
-		doc, err := ret.ParseContentFromLink(ctx, p.Link)
+		doc, err := ret.ParseContentFromLink(ctx, p.Link, true)
 		if err != nil {
 			if errors.Is(err, retrieval.ErrRobotsDenied) {
 				fmt.Print("Skip. Robots.txt denied\n\n")
@@ -45,6 +45,7 @@ func main() {
 		fmt.Println("Image:", doc.Image)
 		fmt.Println("Favicon:", doc.Favicon)
 		fmt.Println("Language:", doc.Language)
+		fmt.Println("All images:", doc.Images)
 		fmt.Print("-------------------------------------------------------\n\n")
 		time.Sleep(time.Second) // sleep to avoid getting captcha
 

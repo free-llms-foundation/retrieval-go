@@ -7,12 +7,12 @@ import (
 	"net/http"
 )
 
-func (c *Client) ParseContentFromLink(ctx context.Context, link string) (*Document, error) {
+func (c *Client) ParseContentFromLink(ctx context.Context, link string, robotsTxtAllowed bool) (*Document, error) {
 	if link == "" {
 		return nil, errors.New("link cannot be empty")
 	}
 
-	if c.respectRobots {
+	if robotsTxtAllowed {
 		allowed, err := c.allowedByRobots(ctx, link)
 		if err != nil {
 			return nil, err

@@ -22,7 +22,6 @@ type Client struct {
 	baseURL         string
 	maxErrBodyBytes int64
 	maxBodyBytes    int64
-	respectRobots   bool
 	converter       *converter.Converter
 }
 
@@ -107,7 +106,6 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 		baseURL:         baseURL,
 		maxErrBodyBytes: maxErrBytes,
 		maxBodyBytes:    maxBodyBytes,
-		respectRobots:   cfg.RespectRobots,
 		converter:       converter,
 	}, nil
 }

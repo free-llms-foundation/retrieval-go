@@ -20,7 +20,7 @@ func main() {
 	}
 
 	url := "https://go.dev"
-	doc, err := ret.ParseContentFromLink(ctx, url)
+	doc, err := ret.ParseContentFromLink(ctx, url, true)
 	if err != nil {
 		if errors.Is(err, retrieval.ErrRobotsDenied) {
 			log.Println("rodobt.txt denied")
