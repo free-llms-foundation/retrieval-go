@@ -12,6 +12,12 @@ func WithHeaders(headers [][2]string) Option {
 	}
 }
 
+func WithMaxIdleConnsPerHost(maxIdleConnsPerHost int64) Option {
+	return func(cfg *Config) {
+		cfg.MaxIdleConnsPerHost = maxIdleConnsPerHost
+	}
+}
+
 func WithClient(httpClient HTTPClient) Option {
 	return func(cfg *Config) {
 		cfg.HTTPClient = httpClient

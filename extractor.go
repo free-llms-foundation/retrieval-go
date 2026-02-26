@@ -41,6 +41,7 @@ func (c *Client) extractFromURL(u string, body io.Reader) (*Document, error) {
 							return
 						}
 					}
+
 					if hStr, ok := s.Attr("height"); ok {
 						if h, _ := strconv.Atoi(hStr); h > 0 && h < 120 {
 							return

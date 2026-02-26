@@ -48,6 +48,12 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 			options = append(options, tls_client.WithTimeoutSeconds(defaultTimeout))
 		}
 
+		if cfg.MaxIdleConnsPerHost != 0 {
+			options = append(options, tls_client.WithTransportOptions(&tls_client.TransportOptions{
+				MaxIdleConnsPerHost: int(cfg.MaxIdleConnsPerHost),
+			}))
+		}
+
 		if cfg.Proxy != "" {
 			options = append(options, tls_client.WithProxyUrl(cfg.Proxy))
 		}
