@@ -8,12 +8,14 @@ import (
 )
 
 type TLSAdapter struct {
-	client tls_client.HttpClient
+	client       tls_client.HttpClient
+	proxyFactory func() string
 }
 
-func NewTLSAdapter(client tls_client.HttpClient) *TLSAdapter {
+func NewTLSAdapter(client tls_client.HttpClient, proxyFactory func() string) *TLSAdapter {
 	return &TLSAdapter{
-		client: client,
+		client:       client,
+		proxyFactory: proxyFactory,
 	}
 }
 
@@ -35,6 +37,10 @@ func (t *TLSAdapter) Do(req *http.Request) (*http.Response, error) {
 		for _, v := range vv {
 			fReq.Header.Add(k, v)
 		}
+	}
+
+	if t.proxyFactory != nil {
+		t.client.SetProxy(t.proxyFactory())
 	}
 
 	fResp, err := t.client.Do(fReq)

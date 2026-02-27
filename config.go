@@ -30,6 +30,7 @@ type Config struct {
 	MaxBodyBytes        int64
 	MaxIdleConnsPerHost int64
 	Proxy               string
+	ProxyFactory        func() string
 }
 
 type Parser interface {
@@ -47,5 +48,6 @@ func DefaultConfig() *Config {
 		MaxBodyBytes:        defaultMaxBodyBytes,
 		MaxIdleConnsPerHost: defaultMaxIdleConnsPerHost,
 		Proxy:               "",
+		ProxyFactory:        nil,
 	}
 }

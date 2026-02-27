@@ -30,6 +30,7 @@ func (c *Client) SearchWithQuery(ctx context.Context, query string, dateFilter s
 	if err != nil {
 		return nil, fmt.Errorf("failed to get decoded reader: %w", err)
 	}
+
 	if reader != resp.Body {
 		defer reader.Close()
 	}

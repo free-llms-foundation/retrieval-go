@@ -55,7 +55,9 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 		}
 
 		if cfg.Proxy != "" {
-			options = append(options, tls_client.WithProxyUrl(cfg.Proxy))
+			if cfg.ProxyFactory == nil {
+				options = append(options, tls_client.WithProxyUrl(cfg.Proxy))
+			}
 		}
 
 		httpTLSClient, err := tls_client.NewHttpClient(tls_client.NewNoopLogger(), options...)
@@ -63,7 +65,7 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 			return nil, err
 		}
 
-		httpClient = NewTLSAdapter(httpTLSClient)
+		httpClient = NewTLSAdapter(httpTLSClient, cfg.ProxyFactory)
 	}
 
 	baseURL := cfg.BaseURL
