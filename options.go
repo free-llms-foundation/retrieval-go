@@ -59,3 +59,9 @@ func WithProxy(proxy string) Option {
 		cfg.Proxy = proxy
 	}
 }
+
+func WithProxyFactory(proxyFactory func() string) Option {
+	return func(cfg *Config) {
+		cfg.ProxyFactory = proxyFactory
+	}
+}
