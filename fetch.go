@@ -32,10 +32,6 @@ func (c *Client) ParseContentFromLink(ctx context.Context, link string, robotsTx
 		return nil, err
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, ErrUnexpectedStatusCode
-	}
-
 	defer resp.Body.Close()
 
 	reader, err := c.getDecodedReader(resp)

@@ -18,7 +18,7 @@ func (c *Client) sendRequest(req *http.Request) (*http.Response, error) {
 		return nil, err
 	}
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+	if resp.StatusCode != http.StatusOK {
 		limited := io.LimitReader(resp.Body, c.maxErrBodyBytes)
 		body, _ := io.ReadAll(limited)
 		resp.Body.Close()

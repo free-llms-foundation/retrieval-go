@@ -34,10 +34,6 @@ func (c *Client) SearchWithQuery(ctx context.Context, query string, dateFilter s
 		defer reader.Close()
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, ErrUnexpectedStatusCode
-	}
-
 	limited := io.NopCloser(io.LimitReader(reader, c.maxBodyBytes))
 	return c.parser.Parse(limited)
 }
