@@ -28,9 +28,10 @@ type Config struct {
 	Timeout             time.Duration
 	MaxErrBodyBytes     int64
 	MaxBodyBytes        int64
-	MaxIdleConnsPerHost int64
+	MaxIdleConnsPerHost int
 	Proxy               string
 	ProxyFactory        func() string
+	DisableKeepAlive    bool
 }
 
 type Parser interface {
@@ -49,5 +50,6 @@ func DefaultConfig() *Config {
 		MaxIdleConnsPerHost: defaultMaxIdleConnsPerHost,
 		Proxy:               "",
 		ProxyFactory:        nil,
+		DisableKeepAlive:    false,
 	}
 }

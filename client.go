@@ -42,16 +42,16 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 			tls_client.WithRandomTLSExtensionOrder(),
 		}
 
+		transportOptions := &tls_client.TransportOptions{
+			MaxIdleConnsPerHost: cfg.MaxIdleConnsPerHost,
+			DisableKeepAlives:   cfg.DisableKeepAlive,
+		}
+		options = append(options, tls_client.WithTransportOptions(transportOptions))
+
 		if cfg.Timeout > 0 {
 			options = append(options, tls_client.WithTimeoutSeconds(int(cfg.Timeout)))
 		} else {
 			options = append(options, tls_client.WithTimeoutSeconds(defaultTimeout))
-		}
-
-		if cfg.MaxIdleConnsPerHost != 0 {
-			options = append(options, tls_client.WithTransportOptions(&tls_client.TransportOptions{
-				MaxIdleConnsPerHost: int(cfg.MaxIdleConnsPerHost),
-			}))
 		}
 
 		if cfg.Proxy != "" {

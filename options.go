@@ -12,7 +12,7 @@ func WithHeaders(headers [][2]string) Option {
 	}
 }
 
-func WithMaxIdleConnsPerHost(maxIdleConnsPerHost int64) Option {
+func WithMaxIdleConnsPerHost(maxIdleConnsPerHost int) Option {
 	return func(cfg *Config) {
 		cfg.MaxIdleConnsPerHost = maxIdleConnsPerHost
 	}
@@ -45,6 +45,12 @@ func WithBaseURL(url string) Option {
 func WithMaxErrBodyBytes(maxBytes int64) Option {
 	return func(cfg *Config) {
 		cfg.MaxErrBodyBytes = maxBytes
+	}
+}
+
+func WithDisableKeepAlive(disableKeepAlive bool) Option {
+	return func(cfg *Config) {
+		cfg.DisableKeepAlive = disableKeepAlive
 	}
 }
 
