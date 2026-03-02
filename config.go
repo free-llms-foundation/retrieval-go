@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	defaultTimeout = 30
+	defaultTimeout = 30 * time.Second
 	defaultBaseURL = "https://lite.duckduckgo.com/lite/"
 	defaultFavicon = "https://www.google.com/s2/favicons?domain=%s"
 

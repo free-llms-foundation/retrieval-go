@@ -2,7 +2,6 @@ package retrieval
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/JohannesKaufmann/html-to-markdown/v2/converter"
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/base"
@@ -44,7 +43,7 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 		if cfg.Timeout > 0 {
 			reqClient.SetTimeout(cfg.Timeout)
 		} else {
-			reqClient.SetTimeout(time.Duration(defaultTimeout) * time.Second)
+			reqClient.SetTimeout(defaultTimeout)
 		}
 
 		// Configure transport options
