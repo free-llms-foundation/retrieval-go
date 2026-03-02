@@ -24,6 +24,12 @@ func WithEnableForceHTTP1(enableForceHTTP1 bool) Option {
 	}
 }
 
+func WithEnableDumpAll(enableDumpAll bool) Option {
+	return func(cfg *Config) {
+		cfg.EnableDumpAll = enableDumpAll
+	}
+}
+
 func WithCommonRetryCount(commonRetryCount int) Option {
 	return func(cfg *Config) {
 		cfg.CommonRetryCount = commonRetryCount
