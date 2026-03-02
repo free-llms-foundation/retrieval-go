@@ -18,6 +18,12 @@ func WithMaxIdleConnsPerHost(maxIdleConnsPerHost int) Option {
 	}
 }
 
+func WithEnableForceHTTP1(enableForceHTTP1 bool) Option {
+	return func(cfg *Config) {
+		cfg.EnableForceHTTP1 = enableForceHTTP1
+	}
+}
+
 func WithCommonRetryCount(commonRetryCount int) Option {
 	return func(cfg *Config) {
 		cfg.CommonRetryCount = commonRetryCount

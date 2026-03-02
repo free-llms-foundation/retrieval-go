@@ -40,6 +40,14 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 			ImpersonateFirefox().
 			SetCommonRetryCount(cfg.CommonRetryCount)
 
+		if cfg.EnableForceHTTP1 {
+			reqClient.EnableForceHTTP1()
+		}
+
+		if cfg.EnableDumpAll {
+			reqClient.EnableDumpAll()
+		}
+
 		if cfg.Timeout > 0 {
 			reqClient.SetTimeout(cfg.Timeout)
 		} else {

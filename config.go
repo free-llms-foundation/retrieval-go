@@ -34,6 +34,8 @@ type Config struct {
 	ProxyFactory        func() string
 	DisableKeepAlive    bool
 	CommonRetryCount    int
+	EnableForceHTTP1    bool
+	EnableDumpAll       bool
 }
 
 type Parser interface {
@@ -54,5 +56,7 @@ func DefaultConfig() *Config {
 		ProxyFactory:        nil,
 		DisableKeepAlive:    false,
 		CommonRetryCount:    defaultCommonRetryCount,
+		EnableForceHTTP1:    false,
+		EnableDumpAll:       false,
 	}
 }
