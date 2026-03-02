@@ -2,13 +2,13 @@ package retrieval
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/JohannesKaufmann/html-to-markdown/v2/converter"
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/base"
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/commonmark"
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/table"
-	tls_client "github.com/bogdanfinn/tls-client"
-	"github.com/bogdanfinn/tls-client/profiles"
+	"github.com/imroc/req/v3"
 )
 
 type HTTPClient interface {
@@ -37,35 +37,26 @@ func New(opts ...Option) (*Client, error) {
 func NewWithConfig(cfg *Config) (*Client, error) {
 	var httpClient = cfg.HTTPClient
 	if httpClient == nil {
-		options := []tls_client.HttpClientOption{
-			tls_client.WithClientProfile(profiles.Firefox_120),
-			tls_client.WithRandomTLSExtensionOrder(),
-		}
-
-		transportOptions := &tls_client.TransportOptions{
-			MaxIdleConnsPerHost: cfg.MaxIdleConnsPerHost,
-			DisableKeepAlives:   cfg.DisableKeepAlive,
-		}
-		options = append(options, tls_client.WithTransportOptions(transportOptions))
+		reqClient := req.C().
+			ImpersonateFirefox().
+			SetCommonRetryCount(cfg.CommonRetryCount)
 
 		if cfg.Timeout > 0 {
-			options = append(options, tls_client.WithTimeoutSeconds(int(cfg.Timeout)))
+			reqClient.SetTimeout(cfg.Timeout)
 		} else {
-			options = append(options, tls_client.WithTimeoutSeconds(defaultTimeout))
+			reqClient.SetTimeout(time.Duration(defaultTimeout) * time.Second)
 		}
 
-		if cfg.Proxy != "" {
-			if cfg.ProxyFactory == nil {
-				options = append(options, tls_client.WithProxyUrl(cfg.Proxy))
-			}
+		// Configure transport options
+		transport := reqClient.GetTransport()
+		transport.MaxIdleConnsPerHost = cfg.MaxIdleConnsPerHost
+		transport.DisableKeepAlives = cfg.DisableKeepAlive
+
+		if cfg.Proxy != "" && cfg.ProxyFactory == nil {
+			reqClient.SetProxyURL(cfg.Proxy)
 		}
 
-		httpTLSClient, err := tls_client.NewHttpClient(tls_client.NewNoopLogger(), options...)
-		if err != nil {
-			return nil, err
-		}
-
-		httpClient = NewTLSAdapter(httpTLSClient, cfg.ProxyFactory)
+		httpClient = NewTLSAdapter(reqClient, cfg.ProxyFactory)
 	}
 
 	baseURL := cfg.BaseURL

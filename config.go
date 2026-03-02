@@ -14,6 +14,7 @@ const (
 	defaultMaxErrBodyBytes     = 1024 * 64   // 64KB limit for error bodies
 	defaultMaxBodyBytes        = 1024 * 1024 // 1MB default for regular bodies
 	defaultMaxIdleConnsPerHost = 32
+	defaultCommonRetryCount    = 0
 )
 
 var (
@@ -32,6 +33,7 @@ type Config struct {
 	Proxy               string
 	ProxyFactory        func() string
 	DisableKeepAlive    bool
+	CommonRetryCount    int
 }
 
 type Parser interface {
@@ -51,5 +53,6 @@ func DefaultConfig() *Config {
 		Proxy:               "",
 		ProxyFactory:        nil,
 		DisableKeepAlive:    false,
+		CommonRetryCount:    defaultCommonRetryCount,
 	}
 }

@@ -2,71 +2,34 @@ package retrieval
 
 import (
 	"net/http"
+	"net/url"
 
-	fhttp "github.com/bogdanfinn/fhttp"
-	tls_client "github.com/bogdanfinn/tls-client"
+	"github.com/imroc/req/v3"
 )
 
 type TLSAdapter struct {
-	client       tls_client.HttpClient
-	proxyFactory func() string
+	client *req.Client
 }
 
-func NewTLSAdapter(client tls_client.HttpClient, proxyFactory func() string) *TLSAdapter {
+func NewTLSAdapter(client *req.Client, proxyFactory func() string) *TLSAdapter {
+	if proxyFactory != nil {
+		client.SetProxy(func(r *http.Request) (*url.URL, error) {
+			p := proxyFactory()
+			if p == "" {
+				return nil, nil
+			}
+			return url.Parse(p)
+		})
+	}
 	return &TLSAdapter{
-		client:       client,
-		proxyFactory: proxyFactory,
+		client: client,
 	}
 }
 
 func (t *TLSAdapter) Do(req *http.Request) (*http.Response, error) {
-	fReq, err := fhttp.NewRequest(req.Method, req.URL.String(), req.Body)
-	if err != nil {
-		return nil, err
-	}
+	return t.client.Do(req)
+}
 
-	fReq = fReq.WithContext(req.Context())
-	fReq.ContentLength = req.ContentLength
-	fReq.Close = req.Close
-	if req.Host != "" {
-		fReq.Host = req.Host
-	}
-	fReq.GetBody = req.GetBody
-
-	for k, vv := range req.Header {
-		for _, v := range vv {
-			fReq.Header.Add(k, v)
-		}
-	}
-
-	if t.proxyFactory != nil {
-		t.client.SetProxy(t.proxyFactory())
-	}
-
-	fResp, err := t.client.Do(fReq)
-	if err != nil {
-		return nil, err
-	}
-
-	resp := &http.Response{
-		Status:           fResp.Status,
-		StatusCode:       fResp.StatusCode,
-		Proto:            fResp.Proto,
-		ProtoMajor:       fResp.ProtoMajor,
-		ProtoMinor:       fResp.ProtoMinor,
-		Body:             fResp.Body,
-		TransferEncoding: fResp.TransferEncoding,
-		Header:           http.Header(fResp.Header),
-		Request:          req,
-		Close:            fResp.Close,
-		Uncompressed:     fResp.Uncompressed,
-		Trailer:          http.Header(fResp.Trailer),
-		ContentLength:    fResp.ContentLength,
-	}
-
-	if fResp.Uncompressed {
-		resp.Header.Del("Content-Encoding")
-	}
-
-	return resp, nil
+func (t *TLSAdapter) ReqClient() *req.Client {
+	return t.client
 }

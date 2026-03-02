@@ -18,6 +18,12 @@ func WithMaxIdleConnsPerHost(maxIdleConnsPerHost int) Option {
 	}
 }
 
+func WithCommonRetryCount(commonRetryCount int) Option {
+	return func(cfg *Config) {
+		cfg.CommonRetryCount = commonRetryCount
+	}
+}
+
 func WithClient(httpClient HTTPClient) Option {
 	return func(cfg *Config) {
 		cfg.HTTPClient = httpClient
