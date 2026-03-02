@@ -16,7 +16,6 @@ type HTTPClient interface {
 
 type Client struct {
 	client          HTTPClient
-	headers         [][2]string
 	parser          Parser
 	baseURL         string
 	maxErrBodyBytes int64
@@ -37,11 +36,13 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 	var httpClient = cfg.HTTPClient
 	if httpClient == nil {
 		reqClient := req.C().
-			ImpersonateFirefox().
+			ImpersonateChrome().
+			SetCommonHeader("Accept-Language", "en-US,en;q=0.5").
 			SetCommonRetryCount(cfg.CommonRetryCount)
 
 		if cfg.EnableForceHTTP1 {
 			reqClient.EnableForceHTTP1()
+			reqClient.GetTLSClientConfig().NextProtos = []string{"http/1.1"}
 		}
 
 		if cfg.EnableDumpAll {
@@ -70,13 +71,6 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 	if baseURL == "" {
 		baseURL = defaultBaseURL
 	}
-
-	headers := cfg.Headers
-	if headers == nil {
-		headers = defaultHeaders
-	}
-
-	headersCopy := append([][2]string(nil), headers...)
 
 	parser := cfg.Parser
 	if parser == nil {
@@ -107,7 +101,6 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 
 	return &Client{
 		client:          httpClient,
-		headers:         headersCopy,
 		parser:          parser,
 		baseURL:         baseURL,
 		maxErrBodyBytes: maxErrBytes,

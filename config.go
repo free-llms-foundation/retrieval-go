@@ -23,7 +23,6 @@ var (
 
 type Config struct {
 	HTTPClient          HTTPClient
-	Headers             [][2]string
 	Parser              Parser
 	BaseURL             string
 	Timeout             time.Duration
@@ -45,7 +44,6 @@ type Parser interface {
 func DefaultConfig() *Config {
 	return &Config{
 		HTTPClient:          nil,
-		Headers:             defaultHeaders,
 		Parser:              &DefaultDDGParser{},
 		BaseURL:             defaultBaseURL,
 		Timeout:             defaultTimeout,

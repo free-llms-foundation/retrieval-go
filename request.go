@@ -7,12 +7,6 @@ import (
 )
 
 func (c *Client) sendRequest(req *http.Request) (*http.Response, error) {
-	for _, header := range c.headers {
-		if req.Header.Get(header[0]) == "" {
-			req.Header.Set(header[0], header[1])
-		}
-	}
-
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err

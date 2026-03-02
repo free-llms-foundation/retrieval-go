@@ -20,10 +20,6 @@ func (c *Client) allowedByRobots(ctx context.Context, target string) (bool, erro
 		return false, err
 	}
 
-	for _, header := range c.headers {
-		req.Header.Set(header[0], header[1])
-	}
-
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return false, err

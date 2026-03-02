@@ -6,12 +6,6 @@ import (
 
 type Option func(*Config)
 
-func WithHeaders(headers [][2]string) Option {
-	return func(cfg *Config) {
-		cfg.Headers = headers
-	}
-}
-
 func WithMaxIdleConnsPerHost(maxIdleConnsPerHost int) Option {
 	return func(cfg *Config) {
 		cfg.MaxIdleConnsPerHost = maxIdleConnsPerHost
