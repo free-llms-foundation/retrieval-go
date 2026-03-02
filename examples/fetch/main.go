@@ -19,7 +19,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	url := "https://go.dev"
+	url := "https://www.yellowpages.com"
 	doc, err := ret.ParseContentFromLink(ctx, url, true)
 	if err != nil {
 		if errors.Is(err, retrieval.ErrRobotsDenied) {
@@ -35,6 +35,7 @@ func main() {
 	fmt.Println("Byline:", doc.Byline)
 	fmt.Println("SiteName:", doc.SiteName)
 	fmt.Println("Image:", doc.Image)
+	fmt.Println("Images:", doc.Images)
 	fmt.Println("Favicon:", doc.Favicon)
 	fmt.Println("Language:", doc.Language)
 

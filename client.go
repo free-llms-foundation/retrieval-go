@@ -37,12 +37,11 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 	if httpClient == nil {
 		reqClient := req.C().
 			ImpersonateChrome().
-			SetCommonHeader("Accept-Language", "en-US,en;q=0.5").
+			SetCommonHeader("Accept-Language", "en-US,en;q=0.9").
 			SetCommonRetryCount(cfg.CommonRetryCount)
 
 		if cfg.EnableForceHTTP1 {
 			reqClient.EnableForceHTTP1()
-			reqClient.GetTLSClientConfig().NextProtos = []string{"http/1.1"}
 		}
 
 		if cfg.EnableDumpAll {
