@@ -73,7 +73,7 @@ func (p *DefaultDDGParser) Parse(reader io.ReadCloser) ([]Page, error) {
 
 		pages = append(pages, Page{
 			Link:    finalLink,
-			Source:  u.Host,
+			Source:  u.Hostname(),
 			Title:   strings.Join(strings.Fields(s.Text()), " "),
 			Snippet: strings.Join(strings.Fields(snippet), " "),
 			Favicon: fmt.Sprintf(defaultFavicon, u.Host),

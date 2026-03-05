@@ -25,6 +25,7 @@ func main() {
 
 	for i, p := range pages {
 		fmt.Printf("%d. %s\n", i+1, p.Title)
+		fmt.Printf("%s\n", p.Source)
 		fmt.Printf("%s\n", p.Link)
 		fmt.Printf("%s\n", p.Favicon)
 		if p.Snippet != "" {
