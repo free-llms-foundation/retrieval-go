@@ -22,19 +22,20 @@ var (
 )
 
 type Config struct {
-	HTTPClient          HTTPClient
-	Parser              Parser
-	BaseURL             string
-	Timeout             time.Duration
-	MaxErrBodyBytes     int64
-	MaxBodyBytes        int64
-	MaxIdleConnsPerHost int
-	Proxy               string
-	ProxyFactory        func() string
-	DisableKeepAlive    bool
-	CommonRetryCount    int
-	EnableForceHTTP1    bool
-	EnableDumpAll       bool
+	HTTPClient            HTTPClient
+	Parser                Parser
+	BaseURL               string
+	Timeout               time.Duration
+	MaxErrBodyBytes       int64
+	MaxBodyBytes          int64
+	MaxIdleConnsPerHost   int
+	Proxy                 string
+	ProxyFactory          func() string
+	DisableKeepAlive      bool
+	CommonRetryCount      int
+	EnableForceHTTP1      bool
+	EnableDumpAll         bool
+	EnableBrowserRotation bool
 }
 
 type Parser interface {
@@ -43,18 +44,19 @@ type Parser interface {
 
 func DefaultConfig() *Config {
 	return &Config{
-		HTTPClient:          nil,
-		Parser:              &DefaultDDGParser{},
-		BaseURL:             defaultBaseURL,
-		Timeout:             defaultTimeout,
-		MaxErrBodyBytes:     defaultMaxErrBodyBytes,
-		MaxBodyBytes:        defaultMaxBodyBytes,
-		MaxIdleConnsPerHost: defaultMaxIdleConnsPerHost,
-		Proxy:               "",
-		ProxyFactory:        nil,
-		DisableKeepAlive:    false,
-		CommonRetryCount:    defaultCommonRetryCount,
-		EnableForceHTTP1:    false,
-		EnableDumpAll:       false,
+		HTTPClient:            nil,
+		Parser:                &DefaultDDGParser{},
+		BaseURL:               defaultBaseURL,
+		Timeout:               defaultTimeout,
+		MaxErrBodyBytes:       defaultMaxErrBodyBytes,
+		MaxBodyBytes:          defaultMaxBodyBytes,
+		MaxIdleConnsPerHost:   defaultMaxIdleConnsPerHost,
+		Proxy:                 "",
+		ProxyFactory:          nil,
+		DisableKeepAlive:      false,
+		CommonRetryCount:      defaultCommonRetryCount,
+		EnableForceHTTP1:      false,
+		EnableDumpAll:         false,
+		EnableBrowserRotation: false,
 	}
 }

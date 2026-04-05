@@ -13,7 +13,9 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
-	ret, err := retrieval.New()
+	ret, err := retrieval.New(
+		retrieval.WithBrowserRotation(),
+	)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -14,7 +14,9 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
-	ret, err := retrieval.New()
+	ret, err := retrieval.New(
+		retrieval.WithBrowserRotation(),
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,7 +41,7 @@ func main() {
 		}
 
 		fmt.Printf("Title:%s\n\n", doc.Title)
-		fmt.Println("Content:", doc.Content[:min(1000, len(doc.Content))])
+		//fmt.Println("Content:", doc.Content[:min(1000, len(doc.Content))])
 		fmt.Println("Byline:", doc.Byline)
 		fmt.Println("SiteName:", doc.SiteName)
 		fmt.Println("Image:", doc.Image)

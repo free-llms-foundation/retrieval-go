@@ -1,7 +1,9 @@
 package retrieval
 
 import (
+	"math/rand"
 	"net/http"
+	"net/url"
 
 	"github.com/JohannesKaufmann/html-to-markdown/v2/converter"
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/base"
@@ -35,35 +37,7 @@ func New(opts ...Option) (*Client, error) {
 func NewWithConfig(cfg *Config) (*Client, error) {
 	var httpClient = cfg.HTTPClient
 	if httpClient == nil {
-		reqClient := req.C().
-			ImpersonateChrome().
-			SetCommonHeader("Accept-Language", "en-US,en;q=0.9").
-			SetCommonRetryCount(cfg.CommonRetryCount)
-
-		if cfg.EnableForceHTTP1 {
-			reqClient.EnableForceHTTP1()
-		}
-
-		if cfg.EnableDumpAll {
-			reqClient.EnableDumpAll()
-		}
-
-		if cfg.Timeout > 0 {
-			reqClient.SetTimeout(cfg.Timeout)
-		} else {
-			reqClient.SetTimeout(defaultTimeout)
-		}
-
-		// Configure transport options
-		transport := reqClient.GetTransport()
-		transport.MaxIdleConnsPerHost = cfg.MaxIdleConnsPerHost
-		transport.DisableKeepAlives = cfg.DisableKeepAlive
-
-		if cfg.Proxy != "" && cfg.ProxyFactory == nil {
-			reqClient.SetProxyURL(cfg.Proxy)
-		}
-
-		httpClient = NewTLSAdapter(reqClient, cfg.ProxyFactory)
+		httpClient = NewTLSAdapter(pickClient(cfg))
 	}
 
 	baseURL := cfg.BaseURL
@@ -106,4 +80,65 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 		maxBodyBytes:    maxBodyBytes,
 		converter:       converter,
 	}, nil
+}
+
+func pickClient(cfg *Config) func() *req.Client {
+	if cfg.EnableBrowserRotation {
+		pool := []*req.Client{
+			newDefaultReqClient(cfg).ImpersonateChrome(),
+			newDefaultReqClient(cfg).ImpersonateFirefox(),
+			newDefaultReqClient(cfg).ImpersonateSafari(),
+		}
+
+		return func() *req.Client {
+			return pool[rand.Intn(len(pool))]
+		}
+	}
+
+	client := newDefaultReqClient(cfg).ImpersonateChrome()
+	return func() *req.Client {
+		return client
+	}
+}
+
+func newDefaultReqClient(cfg *Config) *req.Client {
+	reqClient := req.C().
+		SetCommonHeader("Accept-Language", "en-US,en;q=0.9").
+		SetCommonRetryCount(cfg.CommonRetryCount)
+
+	if cfg.ProxyFactory != nil {
+		factory := cfg.ProxyFactory
+		reqClient.SetProxy(func(r *http.Request) (*url.URL, error) {
+			p := factory()
+			if p == "" {
+				return nil, nil
+			}
+			return url.Parse(p)
+		})
+	}
+
+	if cfg.Proxy != "" && cfg.ProxyFactory == nil {
+		reqClient.SetProxyURL(cfg.Proxy)
+	}
+
+	if cfg.EnableForceHTTP1 {
+		reqClient.EnableForceHTTP1()
+	}
+
+	if cfg.EnableDumpAll {
+		reqClient.EnableDumpAll()
+	}
+
+	if cfg.Timeout > 0 {
+		reqClient.SetTimeout(cfg.Timeout)
+	} else {
+		reqClient.SetTimeout(defaultTimeout)
+	}
+
+	// Configure transport options
+	transport := reqClient.GetTransport()
+	transport.MaxIdleConnsPerHost = cfg.MaxIdleConnsPerHost
+	transport.DisableKeepAlives = cfg.DisableKeepAlive
+
+	return reqClient
 }

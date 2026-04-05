@@ -26,7 +26,7 @@ func (c *Client) allowedByRobots(ctx context.Context, target string) (bool, erro
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return false, nil
 	}
 

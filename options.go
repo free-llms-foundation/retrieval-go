@@ -12,15 +12,15 @@ func WithMaxIdleConnsPerHost(maxIdleConnsPerHost int) Option {
 	}
 }
 
-func WithEnableForceHTTP1(enableForceHTTP1 bool) Option {
+func WithEnableForceHTTP1() Option {
 	return func(cfg *Config) {
-		cfg.EnableForceHTTP1 = enableForceHTTP1
+		cfg.EnableForceHTTP1 = true
 	}
 }
 
-func WithEnableDumpAll(enableDumpAll bool) Option {
+func WithEnableDumpAll() Option {
 	return func(cfg *Config) {
-		cfg.EnableDumpAll = enableDumpAll
+		cfg.EnableDumpAll = true
 	}
 }
 
@@ -60,9 +60,9 @@ func WithMaxErrBodyBytes(maxBytes int64) Option {
 	}
 }
 
-func WithDisableKeepAlive(disableKeepAlive bool) Option {
+func WithDisableKeepAlive() Option {
 	return func(cfg *Config) {
-		cfg.DisableKeepAlive = disableKeepAlive
+		cfg.DisableKeepAlive = true
 	}
 }
 
@@ -81,5 +81,11 @@ func WithProxy(proxy string) Option {
 func WithProxyFactory(proxyFactory func() string) Option {
 	return func(cfg *Config) {
 		cfg.ProxyFactory = proxyFactory
+	}
+}
+
+func WithBrowserRotation() Option {
+	return func(cfg *Config) {
+		cfg.EnableBrowserRotation = true
 	}
 }
