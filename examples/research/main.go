@@ -41,7 +41,7 @@ func main() {
 		}
 
 		fmt.Printf("Title:%s\n\n", doc.Title)
-		//fmt.Println("Content:", doc.Content[:min(1000, len(doc.Content))])
+		fmt.Println("Content:", doc.Content[:min(1000, len(doc.Content))])
 		fmt.Println("Byline:", doc.Byline)
 		fmt.Println("SiteName:", doc.SiteName)
 		fmt.Println("Image:", doc.Image)

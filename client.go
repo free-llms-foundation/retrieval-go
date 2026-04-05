@@ -84,10 +84,11 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 
 func pickClient(cfg *Config) func() *req.Client {
 	if cfg.EnableBrowserRotation {
-		pool := []*req.Client{
-			newDefaultReqClient(cfg).ImpersonateChrome(),
-			newDefaultReqClient(cfg).ImpersonateFirefox(),
-			newDefaultReqClient(cfg).ImpersonateSafari(),
+
+		base := newDefaultReqClient
+		pool := make([]*req.Client, len(profilePool))
+		for i, profile := range profilePool {
+			pool[i] = profile(base(cfg))
 		}
 
 		return func() *req.Client {
