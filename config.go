@@ -7,9 +7,10 @@ import (
 )
 
 const (
-	defaultTimeout = 30 * time.Second
-	defaultBaseURL = "https://lite.duckduckgo.com/lite/"
-	defaultFavicon = "https://www.google.com/s2/favicons?domain=%s"
+	defaultTimeout   = 30 * time.Second
+	defaultBaseURL   = "https://lite.duckduckgo.com/lite/"
+	defaultFavicon   = "https://www.google.com/s2/favicons?domain=%s"
+	defaultImagesURL = "https://www.bing.com/images/search"
 
 	defaultMaxErrBodyBytes     = 1024 * 64   // 64KB limit for error bodies
 	defaultMaxBodyBytes        = 1024 * 1024 // 1MB default for regular bodies
@@ -23,8 +24,10 @@ var (
 
 type Config struct {
 	HTTPClient            HTTPClient
-	Parser                Parser
+	SearchParser          SearchParser
+	ImageParser           ImageParser
 	BaseURL               string
+	ImagesURL             string
 	Timeout               time.Duration
 	MaxErrBodyBytes       int64
 	MaxBodyBytes          int64
@@ -38,15 +41,21 @@ type Config struct {
 	EnableBrowserRotation bool
 }
 
-type Parser interface {
+type SearchParser interface {
 	Parse(reader io.ReadCloser) ([]Page, error)
+}
+
+type ImageParser interface {
+	Parse(reader io.ReadCloser) ([]Image, error)
 }
 
 func DefaultConfig() *Config {
 	return &Config{
 		HTTPClient:            nil,
-		Parser:                &DefaultDDGParser{},
+		SearchParser:          &DefaultDDGParser{},
+		ImageParser:           &BingImagesParser{},
 		BaseURL:               defaultBaseURL,
+		ImagesURL:             defaultImagesURL,
 		Timeout:               defaultTimeout,
 		MaxErrBodyBytes:       defaultMaxErrBodyBytes,
 		MaxBodyBytes:          defaultMaxBodyBytes,

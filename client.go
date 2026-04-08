@@ -18,8 +18,10 @@ type HTTPClient interface {
 
 type Client struct {
 	client          HTTPClient
-	parser          Parser
+	searchParser    SearchParser
+	imageParser     ImageParser
 	baseURL         string
+	imagesURL       string
 	maxErrBodyBytes int64
 	maxBodyBytes    int64
 	converter       *converter.Converter
@@ -45,9 +47,14 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 		baseURL = defaultBaseURL
 	}
 
-	parser := cfg.Parser
-	if parser == nil {
-		parser = &DefaultDDGParser{}
+	searchParser := cfg.SearchParser
+	if searchParser == nil {
+		searchParser = &DefaultDDGParser{}
+	}
+
+	imageParser := cfg.ImageParser
+	if imageParser == nil {
+		imageParser = &BingImagesParser{}
 	}
 
 	maxErrBytes := cfg.MaxErrBodyBytes
@@ -72,10 +79,17 @@ func NewWithConfig(cfg *Config) (*Client, error) {
 		),
 	)
 
+	imagesURL := cfg.ImagesURL
+	if imagesURL == "" {
+		imagesURL = defaultImagesURL
+	}
+
 	return &Client{
 		client:          httpClient,
-		parser:          parser,
+		searchParser:    searchParser,
+		imageParser:     imageParser,
 		baseURL:         baseURL,
+		imagesURL:       imagesURL,
 		maxErrBodyBytes: maxErrBytes,
 		maxBodyBytes:    maxBodyBytes,
 		converter:       converter,

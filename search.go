@@ -36,5 +36,5 @@ func (c *Client) SearchWithQuery(ctx context.Context, query string, dateFilter s
 	}
 
 	limited := io.NopCloser(io.LimitReader(reader, c.maxBodyBytes))
-	return c.parser.Parse(limited)
+	return c.searchParser.Parse(limited)
 }

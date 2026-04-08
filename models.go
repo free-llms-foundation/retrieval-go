@@ -27,3 +27,10 @@ type Page struct {
 	Snippet string
 	Favicon string
 }
+
+type Image struct {
+	URL       string
+	Thumbnail string
+	PageURL   string
+	Desc      string
+}

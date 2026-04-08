@@ -42,9 +42,15 @@ func WithTimeout(timeout time.Duration) Option {
 	}
 }
 
-func WithParser(parser Parser) Option {
+func WithSearchParser(parser SearchParser) Option {
 	return func(cfg *Config) {
-		cfg.Parser = parser
+		cfg.SearchParser = parser
+	}
+}
+
+func WithImageParser(parser ImageParser) Option {
+	return func(cfg *Config) {
+		cfg.ImageParser = parser
 	}
 }
 
@@ -87,5 +93,11 @@ func WithProxyFactory(proxyFactory func() string) Option {
 func WithBrowserRotation() Option {
 	return func(cfg *Config) {
 		cfg.EnableBrowserRotation = true
+	}
+}
+
+func WithCustomImagesURL(url string) Option {
+	return func(cfg *Config) {
+		cfg.ImagesURL = url
 	}
 }

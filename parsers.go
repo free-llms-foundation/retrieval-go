@@ -1,7 +1,9 @@
 package retrieval
 
 import (
+	"encoding/json"
 	"fmt"
+	"html"
 	"io"
 	"net/url"
 	"strings"
@@ -81,4 +83,54 @@ func (p *DefaultDDGParser) Parse(reader io.ReadCloser) ([]Page, error) {
 	})
 
 	return pages, nil
+}
+
+type BingImagesParser struct{}
+
+type bingImageMeta struct {
+	Murl string `json:"murl"`
+	Turl string `json:"turl"`
+	Purl string `json:"purl"`
+	T    string `json:"t"`
+	Desc string `json:"desc"`
+}
+
+func (p *BingImagesParser) Parse(reader io.ReadCloser) ([]Image, error) {
+	doc, err := goquery.NewDocumentFromReader(reader)
+	if err != nil {
+		return nil, fmt.Errorf("bing images: failed to parse HTML: %w", err)
+	}
+
+	var images []Image
+	seen := make(map[string]struct{})
+
+	doc.Find(".iusc").Each(func(_ int, s *goquery.Selection) {
+		mRaw, exists := s.Attr("m")
+		if !exists {
+			return
+		}
+
+		var meta bingImageMeta
+		if err := json.Unmarshal([]byte(html.UnescapeString(mRaw)), &meta); err != nil {
+			return
+		}
+
+		if meta.Murl == "" || meta.Turl == "" || meta.Purl == "" {
+			return
+		}
+
+		if _, dup := seen[meta.Murl]; dup {
+			return
+		}
+		seen[meta.Murl] = struct{}{}
+
+		images = append(images, Image{
+			URL:       meta.Murl,
+			Thumbnail: meta.Turl,
+			PageURL:   meta.Purl,
+			Desc:      strings.TrimSpace(meta.T),
+		})
+	})
+
+	return images, nil
 }
