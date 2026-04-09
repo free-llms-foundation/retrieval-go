@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) GetImagesPerQuery(ctx context.Context, query string) ([]Image, error) {
+func (c *Client) SearchImagesWithQuery(ctx context.Context, query string) ([]Image, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.imagesURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)

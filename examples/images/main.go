@@ -13,12 +13,12 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	client, err := retrieval.New()
+	ret, err := retrieval.New()
 	if err != nil {
 		log.Fatalf("failed to create client: %v", err)
 	}
 
-	images, err := client.GetImagesPerQuery(ctx, "cats")
+	images, err := ret.SearchImagesWithQuery(ctx, "cats")
 	if err != nil {
 		log.Fatalf("failed to get images: %v", err)
 	}
