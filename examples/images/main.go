@@ -18,7 +18,7 @@ func main() {
 		log.Fatalf("failed to create client: %v", err)
 	}
 
-	images, err := ret.SearchImagesWithQuery(ctx, "cats")
+	images, err := ret.SearchImagesWithQuery(ctx, "Donald Trump", "y")
 	if err != nil {
 		log.Fatalf("failed to get images: %v", err)
 	}
