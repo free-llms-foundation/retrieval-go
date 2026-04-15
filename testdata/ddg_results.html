@@ -1,0 +1,785 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=1;">
+  <meta name="referrer" content="origin">
+  <meta name="HandheldFriendly" content="true" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>golang testing at DuckDuckGo</title>
+  <link title="DuckDuckGo (Lite)" type="application/opensearchdescription+xml" rel="search" href="//duckduckgo.com/opensearch_lite_v2.xml">
+  <link href="//duckduckgo.com/favicon.ico" rel="shortcut icon" />
+  <link rel="icon" href="//duckduckgo.com/favicon.ico" type="image/x-icon" />
+  <link id="icon60" rel="apple-touch-icon" href="//duckduckgo.com/assets/icons/meta/DDG-iOS-icon_60x60.png?v=2"/>
+  <link id="icon76" rel="apple-touch-icon" sizes="76x76" href="//duckduckgo.com/assets/icons/meta/DDG-iOS-icon_76x76.png?v=2"/>
+  <link id="icon120" rel="apple-touch-icon" sizes="120x120" href="//duckduckgo.com/assets/icons/meta/DDG-iOS-icon_120x120.png?v=2"/>
+  <link id="icon152" rel="apple-touch-icon" sizes="152x152" href="//duckduckgo.com/assets/icons/meta/DDG-iOS-icon_152x152.png?v=2"/>
+  <link rel="image_src" href="//duckduckgo.com/assets/icons/meta/DDG-icon_256x256.png">
+  <link rel="stylesheet" media="handheld, all" href="//duckduckgo.com/dist/lr.48ddfe4eadf6a534e93f.css" type="text/css"/>
+</head>
+
+<body>
+  <p class='extra'>&nbsp;</p>
+  <div class="header">
+    DuckDuckGo
+  </div>
+  <p class='extra'>&nbsp;</p>
+
+  <form action="/lite/" method="post">
+      <input class='query' type="text" size="40" name="q" value="golang testing">
+      <input class='submit' type="submit" value="Search">
+      
+      
+      
+      
+
+      <div class="filters">
+        <select class="submit" name="kl">
+          
+            <option value="" >All Regions</option>
+          
+            <option value="ar-es" >Argentina</option>
+          
+            <option value="au-en" >Australia</option>
+          
+            <option value="at-de" >Austria</option>
+          
+            <option value="be-fr" >Belgium (fr)</option>
+          
+            <option value="be-nl" >Belgium (nl)</option>
+          
+            <option value="br-pt" >Brazil</option>
+          
+            <option value="bg-bg" >Bulgaria</option>
+          
+            <option value="ca-en" >Canada (en)</option>
+          
+            <option value="ca-fr" >Canada (fr)</option>
+          
+            <option value="ct-ca" >Catalonia</option>
+          
+            <option value="cl-es" >Chile</option>
+          
+            <option value="cn-zh" >China</option>
+          
+            <option value="co-es" >Colombia</option>
+          
+            <option value="hr-hr" >Croatia</option>
+          
+            <option value="cz-cs" >Czech Republic</option>
+          
+            <option value="dk-da" >Denmark</option>
+          
+            <option value="ee-et" >Estonia</option>
+          
+            <option value="fi-fi" >Finland</option>
+          
+            <option value="fr-fr" >France</option>
+          
+            <option value="de-de" >Germany</option>
+          
+            <option value="gr-el" >Greece</option>
+          
+            <option value="hk-tzh" >Hong Kong</option>
+          
+            <option value="hu-hu" >Hungary</option>
+          
+            <option value="is-is" >Iceland</option>
+          
+            <option value="in-en" >India (en)</option>
+          
+            <option value="id-en" >Indonesia (en)</option>
+          
+            <option value="ie-en" >Ireland</option>
+          
+            <option value="il-en" >Israel (en)</option>
+          
+            <option value="it-it" >Italy</option>
+          
+            <option value="jp-jp" >Japan</option>
+          
+            <option value="kr-kr" >Korea</option>
+          
+            <option value="lv-lv" >Latvia</option>
+          
+            <option value="lt-lt" >Lithuania</option>
+          
+            <option value="my-en" >Malaysia (en)</option>
+          
+            <option value="mx-es" >Mexico</option>
+          
+            <option value="nl-nl" >Netherlands</option>
+          
+            <option value="nz-en" >New Zealand</option>
+          
+            <option value="no-no" >Norway</option>
+          
+            <option value="pk-en" >Pakistan (en)</option>
+          
+            <option value="pe-es" >Peru</option>
+          
+            <option value="ph-en" >Philippines (en)</option>
+          
+            <option value="pl-pl" >Poland</option>
+          
+            <option value="pt-pt" >Portugal</option>
+          
+            <option value="ro-ro" >Romania</option>
+          
+            <option value="ru-ru" >Russia</option>
+          
+            <option value="xa-ar" >Saudi Arabia</option>
+          
+            <option value="sg-en" >Singapore</option>
+          
+            <option value="sk-sk" >Slovakia</option>
+          
+            <option value="sl-sl" >Slovenia</option>
+          
+            <option value="za-en" >South Africa</option>
+          
+            <option value="es-ca" >Spain (ca)</option>
+          
+            <option value="es-es" >Spain (es)</option>
+          
+            <option value="se-sv" >Sweden</option>
+          
+            <option value="ch-de" >Switzerland (de)</option>
+          
+            <option value="ch-fr" >Switzerland (fr)</option>
+          
+            <option value="tw-tzh" >Taiwan</option>
+          
+            <option value="th-en" >Thailand (en)</option>
+          
+            <option value="tr-tr" >Turkey</option>
+          
+            <option value="us-en" >US (English)</option>
+          
+            <option value="us-es" >US (Spanish)</option>
+          
+            <option value="ua-uk" >Ukraine</option>
+          
+            <option value="uk-en" >United Kingdom</option>
+          
+            <option value="vn-en" >Vietnam (en)</option>
+          
+        </select>
+
+        <select class="submit" name="df">
+          
+            <option value="" selected>Any Time</option>
+          
+            <option value="d" >Past Day</option>
+          
+            <option value="w" >Past Week</option>
+          
+            <option value="m" >Past Month</option>
+          
+            <option value="y" >Past Year</option>
+          
+        </select>
+      </div>
+  </form>
+
+  
+    <p class="extra">&nbsp;</p>
+    <table border="0">
+      <tr>
+        <td>
+          
+        </td>
+        <td>
+          
+            <!-- Next Page Button Sub-template -->
+<form class="next_form" action="/lite/" method="post">
+    <input type="submit" class='navbutton' value="Next Page &gt;">
+    <input type="hidden" name="q" value="golang testing">
+    <input type="hidden" name="s" value="10">
+    <input type="hidden" name="nextParams" value="">
+    <input type="hidden" name="v" value="l">
+    <input type="hidden" name="o" value="json">
+    <input type="hidden" name="dc" value="12">
+    <input type="hidden" name="api" value="d.js">
+    <input type="hidden" name="vqd" value="4-54578206947472815707813700865906016087">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    
+    
+    
+      <input name="kl" value="wt-wt" type="hidden">
+    
+    
+    
+    
+</form>
+          
+        </td>
+      </tr>
+    </table>
+  
+
+  
+
+  <p class='extra'>&nbsp;</p>
+
+  <table border="0">
+    
+  </table>
+
+  <table border="0">
+    
+      
+      <!-- Web results are present -->
+      
+        
+          
+
+            <tr class="result-sponsored">
+              
+                <!-- Sponsored result with counter -->
+                <td valign="top">
+                  
+                    1.&nbsp;
+                  
+                </td>
+                <td>
+                  <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fduckduckgo.com%2Fy.js%3Fad_domain%3Dudemy.com%26ad_provider%3Dbingv7aa%26ad_type%3Dtxad%26click_metadata%3DObLUAXzq0Ql_SnuDG5DeYgHijzmK8ZXCqzRIykUKfVeEJVqBNGXCtYMmpWPDPPA6EeMfaZY5B6bUalO5wWuxgfjinyPwpbj%252D6PkRl83zk_9uc6V9Sqqa9tgH51Whllo6VKXDMiNmUKKW6cNf6zgDFxrQywCl1nC7rGVUC_KZ%252DvY.e5I6_K34ma05BmooiLyZBg%26rut%3Da043219fccdf95aa3195a0cd3942cb1983f0f5f44f1b453f6f79a113065fe820%26u3%3Dhttps%253A%252F%252Fwww.bing.com%252Faclick%253Fld%253De8LsvCC%252DF0u7NPPB5iaCAOjjVUCUxldoj3UwmQxTLoyrjeSUt434tgfncbklKd_uB5ZsZlHQcIZjL8T0KJtdvvRjqzAZsjpaxYI6YJDbumPPlfyFWlkmngPju8AFqARb00kobF_h%252DOou3MuSVi_Z%252D3d%252DSHZf15hckZJ2JVu2b2qjMXQJr_2Fv%252DQ2kRoPXQchsXHBt5%252DSxjCZ8w6iO7FQ%252DO_Crl4O0%2526u%253DaHR0cHMlM2ElMmYlMmZ3d3cudWRlbXkuY29tJTJmY291cnNlJTJmbGVhcm4tZ28tdGhlLWNvbXBsZXRlLWJvb3RjYW1wLWNvdXJzZS1nb2xhbmclMmYlM2Z1dG1fY2FtcGFpZ24lM2RCRy1TZWFyY2hfS2V5d29yZF9CZXRhX1Byb2ZfbGEuRU5fY2MuUk9XLUVuZ2xpc2glMjZ1dG1fc291cmNlJTNkYmluZyUyNnV0bV9tZWRpdW0lM2RwYWlkLXNlYXJjaCUyNnBvcnRmb2xpbyUzZEJpbmctUk9XLUVuZ2xpc2glMjZ1dG1fYXVkaWVuY2UlM2RteCUyNnV0bV90YWN0aWMlM2RuYiUyNnV0bV90ZXJtJTNkXy5fYWdfMTMyNjAxMzQxMTY3NzM0MF8uX2FkX18uX2t3X2dvbGFuZyUyNTIwdHV0b3JpYWxzJTI2dXRtX2NvbnRlbnQlM2RzJTI2ZnVubmVsJTNkJTI2dGVzdCUzZCUyNnV0bV9jYW1wYWlnbl9pZCUzZDYzODU5NjIzMiUyNm1zY2xraWQlM2Q5NWUyNDRlNTI1NTExNjRjM2I5YzJkM2JhZDY5YTcxMA%2526rlid%253D95e244e52551164c3b9c2d3bad69a710%26vqd%3D4%2D120496237845539979018944775937716347617%26iurl%3D%257B1%257DIG%253DA092A8A3C1934F73BA079EFDC4E0452D%2526CID%253D3CB38CE173626A5F2CFF9BDA72196B7A%2526ID%253DDevEx%252C5046.1&amp;rut=e4fa11ce7c6fdc3b24234375a27a22204bff3b26e808e02ed033a9786195f868" class='result-link'>Golang Online Course - Best-Selling Online Courses</a>
+                  (Sponsored link - <a
+                    href="https://duckduckgo.com/duckduckgo-help-pages/company/ads-by-microsoft-on-duckduckgo-private-search/"
+                    rel="nofollow" class="result-link">more info</a>)
+                </td>
+                
+            </tr>
+
+            
+              <tr class="result-sponsored">
+                <td>&nbsp;&nbsp;&nbsp;</td>
+                <td class='result-snippet'>
+                  Find the right Go Programming instructor for you. Any topic, skill level, or language. Professional skills that position you at the top of the candidate list.
+                </td>
+              </tr>
+            
+
+            
+              <tr class="result-sponsored">
+                <td>&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                  <span class='link-text'>udemy.com</span>
+                  
+                </td>
+              </tr>
+            
+
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+          
+
+          
+      
+        
+            <tr>
+              
+                <td valign="top">
+                  
+                    2.&nbsp;
+                  
+                </td>
+                <td>
+                  <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fpkg.go.dev%2Ftesting&amp;rut=1892a9a3d6ec163732147100848af0e9e482cb1803c1d8ff891f5184b0ee4172" class='result-link'>testing package - testing - Go Packages</a>
+                </td>
+                
+            </tr>
+
+            
+              
+                <!-- Only show abstract separately if there's a click URL (not EOF) -->
+                <tr>
+                  <td>&nbsp;&nbsp;&nbsp;</td>
+                  <td class='result-snippet'>
+                    To write a new test suite, create a file that contains the TestXxx functions as described here, and give that file a name ending in &quot;_test.go&quot;. The file will be excluded from regular package builds but will be included when the &quot;go test&quot; command is run.
+                  </td>
+                </tr>
+              
+            
+
+            
+              <tr>
+                <td>&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                  <span class='link-text'>pkg.go.dev/testing</span>
+                  
+                    &nbsp;&nbsp;&nbsp;
+                    <span class='timestamp'>2026-04-07T00:00:00.0000000</span>
+                  
+                </td>
+              </tr>
+            
+
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+
+        
+      
+        
+            <tr>
+              
+                <td valign="top">
+                  
+                    3.&nbsp;
+                  
+                </td>
+                <td>
+                  <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fgobyexample.com%2Ftesting&amp;rut=30d3f4c2252d4b26a13aa506a8436897a993721e20dfa43f64acd413760cde32" class='result-link'>: Testing - Go by Example</a>
+                </td>
+                
+            </tr>
+
+            
+              
+                <!-- Only show abstract separately if there's a click URL (not EOF) -->
+                <tr>
+                  <td>&nbsp;&nbsp;&nbsp;</td>
+                  <td class='result-snippet'>
+                    Learn how to write and run unit tests for Go programs using the <b>testing</b> package and the go test command. See examples of basic, table-driven and benchmark tests for an integer minimum function.
+                  </td>
+                </tr>
+              
+            
+
+            
+              <tr>
+                <td>&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                  <span class='link-text'>gobyexample.com/testing</span>
+                  
+                </td>
+              </tr>
+            
+
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+
+        
+      
+        
+            <tr>
+              
+                <td valign="top">
+                  
+                    4.&nbsp;
+                  
+                </td>
+                <td>
+                  <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fblog.jetbrains.com%2Fgo%2F2022%2F11%2F22%2Fcomprehensive%2Dguide%2Dto%2Dtesting%2Din%2Dgo%2F&amp;rut=456b05f132b9c860d5744cf58cb025b3c6c23b63b19cc6d45bb0b1cd210435c9" class='result-link'>Comprehensive Guide to Testing in Go | The GoLand Blog</a>
+                </td>
+                
+            </tr>
+
+            
+              
+                <!-- Only show abstract separately if there's a click URL (not EOF) -->
+                <tr>
+                  <td>&nbsp;&nbsp;&nbsp;</td>
+                  <td class='result-snippet'>
+                    Learn how to write and run unit tests, table-driven tests, benchmark tests, and fuzz tests in Go. This article covers the standard <b>testing</b> package, Testify library, and code coverage tools with examples and tips.
+                  </td>
+                </tr>
+              
+            
+
+            
+              <tr>
+                <td>&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                  <span class='link-text'>blog.jetbrains.com/go/2022/11/22/comprehensive-guide-to-testing-in-go/</span>
+                  
+                </td>
+              </tr>
+            
+
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+
+        
+      
+        
+            <tr>
+              
+                <td valign="top">
+                  
+                    5.&nbsp;
+                  
+                </td>
+                <td>
+                  <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.freecodecamp.org%2Fnews%2Funit%2Dtesting%2Din%2Dgo%2Da%2Dbeginners%2Dguide&amp;rut=d94a7228679d6269bd0b0acbe3d5cd5a03df9dbf85b96619b8b29338576c3d58" class='result-link'>Unit Testing in Go - A Beginner&#x27;s Guide - freeCodeCamp.org</a>
+                </td>
+                
+            </tr>
+
+            
+              
+                <!-- Only show abstract separately if there's a click URL (not EOF) -->
+                <tr>
+                  <td>&nbsp;&nbsp;&nbsp;</td>
+                  <td class='result-snippet'>
+                    In this article, we&#x27;ll look at how unit <b>testing</b> works in Go in practice. We&#x27;ll write a few small tests, run them from the command line, and cover the most common patterns you&#x27;ll see in real Go codebases, such as table-driven tests and <b>testing</b> functions that return errors.
+                  </td>
+                </tr>
+              
+            
+
+            
+              <tr>
+                <td>&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                  <span class='link-text'>www.freecodecamp.org/news/unit-testing-in-go-a-beginners-guide</span>
+                  
+                    &nbsp;&nbsp;&nbsp;
+                    <span class='timestamp'>2026-01-12T00:00:00.0000000</span>
+                  
+                </td>
+              </tr>
+            
+
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+
+        
+      
+        
+            <tr>
+              
+                <td valign="top">
+                  
+                    6.&nbsp;
+                  
+                </td>
+                <td>
+                  <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.digitalocean.com%2Fcommunity%2Ftutorials%2Fhow%2Dto%2Dwrite%2Dunit%2Dtests%2Din%2Dgo%2Dusing%2Dgo%2Dtest%2Dand%2Dthe%2Dtesting%2Dpackage&amp;rut=9e7329edadf0b6253b1499dea471fa1ee40ad4742a8c372d9157665d3fb0e4c2" class='result-link'>How To Write Unit Tests in Go - DigitalOcean</a>
+                </td>
+                
+            </tr>
+
+            
+              
+                <!-- Only show abstract separately if there's a click URL (not EOF) -->
+                <tr>
+                  <td>&nbsp;&nbsp;&nbsp;</td>
+                  <td class='result-snippet'>
+                    In this tutorial, you will create a small program and then run a series of tests on your code using Go&#x27;s <b>testing</b> package and the go test command. Once you co…
+                  </td>
+                </tr>
+              
+            
+
+            
+              <tr>
+                <td>&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                  <span class='link-text'>www.digitalocean.com/community/tutorials/how-to-write-unit-tests-in-go-using-go-test-and-the-testing-package</span>
+                  
+                </td>
+              </tr>
+            
+
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+
+        
+      
+        
+            <tr>
+              
+                <td valign="top">
+                  
+                    7.&nbsp;
+                  
+                </td>
+                <td>
+                  <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.twilio.com%2Fen%2Dus%2Fblog%2Fdevelopers%2Fcommunity%2Ftesting%2Dbenchmarking%2Dgo&amp;rut=091ce908eeb955bc072e0b8a42887f5ad8f35b337dfc7ce9610395c61ad71a7b" class='result-link'>Testing and Benchmarking in Go - Twilio</a>
+                </td>
+                
+            </tr>
+
+            
+              
+                <!-- Only show abstract separately if there's a click URL (not EOF) -->
+                <tr>
+                  <td>&nbsp;&nbsp;&nbsp;</td>
+                  <td class='result-snippet'>
+                    In this article, we explored how to implement <b>testing</b> and benchmarking in <b>Golang</b>. By leveraging the <b>testing</b> package and built-in benchmarking tools, you can ensure your code is both correct and efficient.
+                  </td>
+                </tr>
+              
+            
+
+            
+              <tr>
+                <td>&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                  <span class='link-text'>www.twilio.com/en-us/blog/developers/community/testing-benchmarking-go</span>
+                  
+                    &nbsp;&nbsp;&nbsp;
+                    <span class='timestamp'>2025-04-15T00:00:00.0000000</span>
+                  
+                </td>
+              </tr>
+            
+
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+
+        
+      
+        
+            <tr>
+              
+                <td valign="top">
+                  
+                    8.&nbsp;
+                  
+                </td>
+                <td>
+                  <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fdev.to%2Fgodofgeeks%2Ftesting%2Din%2Dgo%2Dtesting%2Dpackage%2D1gip&amp;rut=48b5c4e6cc5c9ae997e0847081e992cd4f34fb1b4d69a5b449a61e8e9aac8c65" class='result-link'>Testing in Go (testing package) - DEV Community</a>
+                </td>
+                
+            </tr>
+
+            
+              
+                <!-- Only show abstract separately if there's a click URL (not EOF) -->
+                <tr>
+                  <td>&nbsp;&nbsp;&nbsp;</td>
+                  <td class='result-snippet'>
+                    Go&#x27;s built-in <b>testing</b> package provides a simple yet powerful framework for writing unit tests. It emphasizes readability and encourages a test-driven development (TDD) approach.
+                  </td>
+                </tr>
+              
+            
+
+            
+              <tr>
+                <td>&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                  <span class='link-text'>dev.to/godofgeeks/testing-in-go-testing-package-1gip</span>
+                  
+                    &nbsp;&nbsp;&nbsp;
+                    <span class='timestamp'>2025-05-13T00:00:00.0000000</span>
+                  
+                </td>
+              </tr>
+            
+
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+
+        
+      
+        
+            <tr>
+              
+                <td valign="top">
+                  
+                    9.&nbsp;
+                  
+                </td>
+                <td>
+                  <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fbetterstack.com%2Fcommunity%2Fguides%2Ftesting%2Funit%2Dtesting%2Din%2Dgo%2F&amp;rut=366f85d82225e45e9f6473c6391f2b6881079e96a29c085f8342369698c058ad" class='result-link'>A Gentle Introduction to Unit Testing in Go - Better Stack</a>
+                </td>
+                
+            </tr>
+
+            
+              
+                <!-- Only show abstract separately if there's a click URL (not EOF) -->
+                <tr>
+                  <td>&nbsp;&nbsp;&nbsp;</td>
+                  <td class='result-snippet'>
+                    Discover unit <b>testing</b> in Go: Learn Go&#x27;s <b>testing</b> framework, interpret results, fix failures, and analyze code coverage in this concise tutorial.
+                  </td>
+                </tr>
+              
+            
+
+            
+              <tr>
+                <td>&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                  <span class='link-text'>betterstack.com/community/guides/testing/unit-testing-in-go/</span>
+                  
+                </td>
+              </tr>
+            
+
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+
+        
+      
+        
+            <tr>
+              
+                <td valign="top">
+                  
+                    10.&nbsp;
+                  
+                </td>
+                <td>
+                  <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fgo.dev%2Fdoc%2Ftutorial%2Fadd%2Da%2Dtest&amp;rut=052a1832e930555cd8ab0ff43a32d7deda49f41da2f81d556ba1716668be80c8" class='result-link'>Add a test - The Go Programming Language</a>
+                </td>
+                
+            </tr>
+
+            
+              
+                <!-- Only show abstract separately if there's a click URL (not EOF) -->
+                <tr>
+                  <td>&nbsp;&nbsp;&nbsp;</td>
+                  <td class='result-snippet'>
+                    Learn how to write and execute tests for your Go code using the <b>testing</b> package and the go test command. Follow the tutorial to create a test for the Hello function and see the output and errors.
+                  </td>
+                </tr>
+              
+            
+
+            
+              <tr>
+                <td>&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                  <span class='link-text'>go.dev/doc/tutorial/add-a-test</span>
+                  
+                </td>
+              </tr>
+            
+
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+
+        
+      
+        
+            <tr>
+              
+                <td valign="top">
+                  
+                    11.&nbsp;
+                  
+                </td>
+                <td>
+                  <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.ceos3c.com%2Fgolang%2Fgo%2Dunit%2Dtesting%2Da%2Dcomplete%2Dguide%2Dto%2Dwriting%2Dreliable%2Dtests%2F&amp;rut=0189bbe1b0c4e14939f2383e046ccac9a1ecc170bdf459ea853e252774e195f7" class='result-link'>Go Unit Testing: A Complete Guide to Writing Reliable Tests</a>
+                </td>
+                
+            </tr>
+
+            
+              
+                <!-- Only show abstract separately if there's a click URL (not EOF) -->
+                <tr>
+                  <td>&nbsp;&nbsp;&nbsp;</td>
+                  <td class='result-snippet'>
+                    Go&#x27;s built-in <b>testing</b> package makes it straightforward to write and run tests, but knowing how to write effective tests can be challenging. This guide will walk you through everything you need to know about unit <b>testing</b> in Go, from basic concepts to advanced techniques.
+                  </td>
+                </tr>
+              
+            
+
+            
+              <tr>
+                <td>&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                  <span class='link-text'>www.ceos3c.com/golang/go-unit-testing-a-complete-guide-to-writing-reliable-tests/</span>
+                  
+                    &nbsp;&nbsp;&nbsp;
+                    <span class='timestamp'>2025-01-27T00:00:00.0000000</span>
+                  
+                </td>
+              </tr>
+            
+
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+
+        
+      
+    
+
+    
+      
+      <tr>
+        <td colspan=2>
+          
+          
+            <!-- Next Page Button Sub-template -->
+<form class="next_form" action="/lite/" method="post">
+    <input type="submit" class='navbutton' value="Next Page &gt;">
+    <input type="hidden" name="q" value="golang testing">
+    <input type="hidden" name="s" value="10">
+    <input type="hidden" name="nextParams" value="">
+    <input type="hidden" name="v" value="l">
+    <input type="hidden" name="o" value="json">
+    <input type="hidden" name="dc" value="12">
+    <input type="hidden" name="api" value="d.js">
+    <input type="hidden" name="vqd" value="4-54578206947472815707813700865906016087">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    
+    
+    
+      <input name="kl" value="wt-wt" type="hidden">
+    
+    
+    
+    
+</form>
+          
+          
+        </td>
+      </tr>
+    
+  </table>
+
+  <p class='extra'>&nbsp;</p>
+
+  <form action="/lite/" method="post">
+      <input class='query' type="text" size="40" name="q" value="golang testing" >
+      <input class='submit' type="submit" value="Search">
+      
+      
+      
+      
+      
+        <input name="kl" value="wt-wt" type="hidden">
+      
+  </form>
+
+  <p class='extra'>&nbsp;</p>
+
+  
+    <img src="//duckduckgo.com/t/sl_l"/>
+  
+  <div id='end-spacer'>&nbsp;</div>
+
+</body>
+</html>
