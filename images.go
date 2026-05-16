@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 )
 
 // bingImageDateFilter maps DuckDuckGo-style date shorthand (d/w/m/y) to Bing
@@ -23,11 +24,13 @@ func (c *Client) SearchImagesWithQuery(ctx context.Context, query string, dateFi
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	q := req.URL.Query()
-	q.Set("q", query)
-	q.Set("form", "QBIDMH")
-	q.Set("first", "1")
-	req.URL.RawQuery = q.Encode()
+	// Build RawQuery manually to ensure 'q' is FIRST.
+	// Order of parameters is often a signal for bot detection.
+	rawQuery := "q=" + url.QueryEscape(query)
+	rawQuery += "&form=QBIDMH"
+	rawQuery += "&first=1"
+	rawQuery += "&adlt=strict"
+	req.URL.RawQuery = rawQuery
 	// Bing requires the colon in filterui:age-lt to be literal (not %3A),
 	// so we append qft directly to RawQuery instead of using url.Values.
 	if f, ok := bingImageDateFilter[dateFilter]; ok {
