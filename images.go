@@ -25,7 +25,7 @@ func (c *Client) SearchImagesWithQuery(ctx context.Context, query string, dateFi
 
 	q := req.URL.Query()
 	q.Set("q", query)
-	q.Set("form", "HDRSC3")
+	q.Set("form", "QBIDMH")
 	q.Set("first", "1")
 	req.URL.RawQuery = q.Encode()
 	// Bing requires the colon in filterui:age-lt to be literal (not %3A),
